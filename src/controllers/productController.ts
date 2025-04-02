@@ -7,10 +7,18 @@ import fs from 'fs';
 
 
 export const getProducts = async (req: Request, res: Response) => {
+  try {
+    
   const products = await findProducts();
   res.json(products);
+} catch (error:any) {
+  res.status(500).json({ error: "Internal server error", details: error.message });
+
+}
 };
 export const getProductsById = async (req: Request, res: Response) => {
+  try {
+    
   const id = parseInt(req.query.id as string);
   if (isNaN(id)) {
      res.status(400).json({ error: "Invalid Product ID" });
@@ -20,6 +28,10 @@ export const getProductsById = async (req: Request, res: Response) => {
   }
   const products = await findProductById(id);
   res.status(200).json({data:products});
+} catch (error:any) {
+  res.status(500).json({ error: "Internal server error", details: error.message });
+
+}
 };
 export const createProduct = async (req: Request, res: Response) => {
   try {
@@ -60,6 +72,8 @@ export const createProduct = async (req: Request, res: Response) => {
 }
 
 export const updateExistingProduct = async (req: Request, res: Response) => {
+  try {
+
   const id : number =parseInt (req.params.id);4
   console.log("req.params.id",req.params.id);
   
@@ -85,10 +99,17 @@ const product=req.body
     }
     await addProduct({...product,id});
 
-  res.json(product);
+  res.status(200).json(product);
+      
+} catch (error:any) {
+  res.status(500).json({ error: "Internal server error", details: error.message });
+ 
+}
 };
 
-export const deleteProduct = async (req: Request, res: Response):  Promise<void>=> {
+export const deleteProduct = async (req: Request, res: Response)=> {
+  try {
+    
   const id :number = parseInt(  req.params.id);
   const product = await findProductById(id);
   if (!product) {
@@ -106,4 +127,7 @@ export const deleteProduct = async (req: Request, res: Response):  Promise<void>
       message: "Product deleted successfully!"
     });
   }
+} catch (error:any) {
+  res.status(500).json({ error: "Internal server error", details: error.message });
+}
 };
